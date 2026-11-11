@@ -1,0 +1,31 @@
+node_modules
+.next
+out
+build
+dist
+.env
+.env.local
+*.log
+npm-debug.log*
+.DS_Store
+coverage
+.vercel
+next-env.d.ts
+shots
+# camera originals for the service clips — the web-ready encodes
+# in public/services are what ships
+media-source
+
+# Figma design reference for the auction hero — not part of the build
+Update action page visuals
+
+V3DS1n
+XATjJ3z4q
+/let
+*.zip
+README.md
+HANDOFF.md
+DEPLOY.md
+docs/AUCTION.md
+public/music/README.md
+public/narration/README.md

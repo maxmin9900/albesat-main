@@ -1,0 +1,19 @@
+node_modules
+.next
+.git
+npm-debug.log
+Dockerfile
+.dockerignore
+.env.local
+*.md
+# camera originals — hundreds of MB that never reach the image
+media-source
+
+# Figma design reference for the auction hero — not part of the build
+Update action page visuals
+
+# Admin uploads live on a bind mount (see docker-compose.prod.yml), so the
+# image never needs them. Copying them in baked a fresh snapshot of every
+# uploaded photo into a new layer on EVERY rebuild — which is what filled
+# the server's disk. The upload route mkdirs the folder at runtime anyway.
+public/uploads

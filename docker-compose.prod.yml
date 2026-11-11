@@ -1,0 +1,58 @@
+# Production stack for the server (49.13.160.62)
+# Usage on the server:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# NOTE: this runs the built `runner` image, not the dev server. Source changes
+# do NOT hot-reload — after uploading new code you must rebuild:
+#   docker compose -f docker-compose.prod.yml up -d --build web
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: carpet_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-carpet}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-carpet_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-carpet_samir}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-carpet} -d ${POSTGRES_DB:-carpet_samir}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    container_name: carpet_web
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-carpet}:${POSTGRES_PASSWORD:-carpet_secret}@db:5432/${POSTGRES_DB:-carpet_samir}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-change_this_in_prod_super_secret_key}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@carpetsamir.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@12345}
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      # LIVE_AUCTION_ROOMS is intentionally NOT set here: the live auction
+      # rooms (/auctions/[id], deposits, SSE, the floor) are a local-only
+      # feature for now. Without it the site bids exactly as it did before.
+    ports:
+      # bind to localhost only — nginx proxies to it; never expose to the
+      # internet directly (Docker bypasses UFW, so a 0.0.0.0 bind is a hole).
+      - "127.0.0.1:8004:3000"
+    volumes:
+      # Admin uploads are the one thing written at runtime. In the dev setup the
+      # whole repo was bind-mounted so they landed on the host by accident; the
+      # built image has no such mount, so bind this one folder explicitly or
+      # every uploaded photo dies with the next rebuild. Same host path as
+      # before, so existing uploads are picked up untouched.
+      - ./public/uploads:/app/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

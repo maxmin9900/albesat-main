@@ -1,0 +1,8 @@
+# Shell scripts run inside Linux containers: a CR at the end of a line makes
+# `sh` fail with "set: Illegal option -". Force LF regardless of the
+# developer's core.autocrlf.
+*.sh        text eol=lf
+Dockerfile  text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.prisma    text eol=lf

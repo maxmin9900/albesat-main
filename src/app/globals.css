@@ -1,0 +1,519 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/*  ALBESAT — Luxury Persian Dark Theme                                */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Space / surfaces */
+  --color-void: #05050a;
+  --color-space: #0a0a12;
+  --color-surface: #12121c;
+  --color-surface-2: #1a1a28;
+  --color-border: #262636;
+
+  /* Gold — silk & gold woven galaxy */
+  --color-gold: #c9a24b;
+  --color-gold-light: #e6c67a;
+  --color-gold-dim: #8a7238;
+
+  /* Persian crimson */
+  --color-crimson: #8b1e2d;
+  --color-crimson-light: #b8323f;
+
+  /* Teal / lapis accents (Persian tile) */
+  --color-lapis: #1d5c78;
+  --color-turquoise: #3fa8a0;
+
+  /* Silk / cream text */
+  --color-silk: #f0e6d2;
+  --color-cream: #d8cbb0;
+  --color-muted: #8a8a9a;
+
+  --font-sans: var(--font-vazir), system-ui, sans-serif;
+  --font-display: var(--font-cormorant), Georgia, serif;
+
+  --shadow-glow-gold: 0 0 40px -5px rgba(201, 162, 75, 0.35);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  background: var(--color-void);
+  color: var(--color-silk);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-void);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* When Lenis smooth scroll is active */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-dim);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
+
+/* Reusable luxury bits */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #e6c67a 0%, #c9a24b 45%, #8a7238 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- Hero backdrop: the woven loom & carpet behind the globe ---------
+   A very slow drift so the carpet breathes like fabric under lamplight —
+   base scale keeps the edges covered while it moves. */
+@keyframes carpet-breathe {
+  0%,
+  100% {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.12) translate3d(-1.4%, -1%, 0);
+  }
+}
+.hero-carpet {
+  animation: carpet-breathe 28s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* warm lamplight that swells and fades over the silk — kept faint so the
+   weave stays sharp and readable underneath */
+@keyframes carpet-lamp {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 0.24;
+    transform: translate3d(2%, -1.5%, 0);
+  }
+}
+.hero-carpet-glow {
+  background: radial-gradient(
+    ellipse 55% 45% at 42% 58%,
+    rgba(224, 176, 92, 0.28),
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  animation: carpet-lamp 19s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* Living gold — a slow molten sheen drifting across the letters */
+@keyframes gold-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.text-gradient-gold-animated {
+  background: linear-gradient(
+    110deg,
+    #8a7238 0%,
+    #c9a24b 22%,
+    #e6c67a 42%,
+    #fff3cf 50%,
+    #e6c67a 58%,
+    #c9a24b 78%,
+    #8a7238 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-flow 7s ease-in-out infinite;
+}
+
+/* Hero CTA — gold shimmer sweep + soft halo, silk-smooth hover */
+.btn-gold-shimmer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 0 26px -8px rgba(201, 162, 75, 0.45),
+    inset 0 0 14px rgba(201, 162, 75, 0.1);
+  transition: box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-gold-shimmer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    rgba(255, 240, 200, 0.28) 50%,
+    transparent 65%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3.6s linear infinite;
+}
+.btn-gold-shimmer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 44px -6px rgba(201, 162, 75, 0.75),
+    inset 0 0 18px rgba(201, 162, 75, 0.18);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Hairline gold divider */
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold) 50%,
+    transparent
+  );
+}
+
+/* Persian ornament dot */
+.ornament::before,
+.ornament::after {
+  content: "❖";
+  color: var(--color-gold);
+  margin: 0 0.75rem;
+  font-size: 0.75em;
+  opacity: 0.7;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pin-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.animate-pin-bob {
+  animation: pin-bob 3s ease-in-out infinite;
+}
+
+/* A silk-thread pulse that runs along each carpet-city trade route. */
+@keyframes route-flow {
+  from {
+    stroke-dashoffset: 65;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.route-flow {
+  stroke-dasharray: 3 62;
+  opacity: 0.9;
+  animation: route-flow 2.8s linear infinite;
+}
+
+/* Larger pulse for the full-screen atlas map (bigger viewBox units). */
+@keyframes map-route-flow {
+  from {
+    stroke-dashoffset: 130;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.map-route-flow {
+  stroke-dasharray: 10 120;
+  animation: map-route-flow 3s linear infinite;
+}
+
+/* City awakening — one-shot golden ring + particle burst when a city
+   medallion lights up along the scroll journey. */
+@keyframes city-ring {
+  from {
+    transform: scale(0.25);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+.city-ring {
+  animation: city-ring 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  box-shadow: 0 0 22px rgba(230, 198, 122, 0.55);
+}
+@keyframes city-spark {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--a)) translateX(6px);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--a)) translateX(46px);
+    opacity: 0;
+  }
+}
+.city-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffe9a8;
+  box-shadow: 0 0 8px rgba(255, 233, 168, 0.9);
+  animation: city-spark 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* A spark of golden energy travelling around each province border. */
+@keyframes prov-flow {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.prov-flow {
+  stroke-width: 2.5;
+  stroke-dasharray: 6 94;
+  stroke-opacity: 0.9;
+  animation: prov-flow 4.5s linear infinite;
+}
+
+/* The golden bird — wing flap in flight, gentle bob while perched. */
+@keyframes wing-flap {
+  0%,
+  100% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-42deg);
+  }
+}
+.bird-wing {
+  transform-box: fill-box;
+  transform-origin: 15% 85%;
+  animation: wing-flap 0.32s ease-in-out infinite;
+}
+.bird-wing-far {
+  animation-delay: 0.06s;
+}
+@keyframes bird-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7%);
+  }
+}
+.bird-idle {
+  animation: bird-bob 2.8s ease-in-out infinite;
+}
+
+/* ---- Animated carpet medallion on the atlas map -------------------- */
+@keyframes carpet-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes carpet-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-9%) scale(1.04);
+  }
+}
+@keyframes carpet-sheen {
+  0% {
+    transform: translateX(-160%) rotate(18deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  55%,
+  100% {
+    transform: translateX(160%) rotate(18deg);
+    opacity: 0;
+  }
+}
+.carpet-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+}
+.carpet-medallion {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  animation: carpet-bob 3.4s ease-in-out infinite;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 22px rgba(201, 162, 75, 0.45);
+  will-change: transform;
+}
+.carpet-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #e6c67a,
+    #fff4d0,
+    #8a6c23,
+    #e6c67a,
+    #fff4d0,
+    #8a6c23,
+    #e6c67a
+  );
+  animation: carpet-ring-spin 6s linear infinite;
+}
+.carpet-photo {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.55);
+}
+.carpet-sheen {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.carpet-sheen::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 42%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.75),
+    transparent
+  );
+  animation: carpet-sheen 3.8s ease-in-out infinite;
+}
+.carpet-pin:hover .carpet-medallion {
+  animation-play-state: paused;
+  transform: translateY(-9%) scale(1.16);
+}
+.carpet-name {
+  margin-top: 8%;
+  font-weight: 700;
+  color: #ffe9a8;
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85), 0 0 3px #0c0c14;
+  letter-spacing: 0.06em;
+}
+
+/* Atlas map text */
+.sea-label {
+  fill: #1d4a63;
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-size: 26px;
+  fill-opacity: 0.7;
+  letter-spacing: 1px;
+}
+.ctx-label {
+  fill: #3a2a12;
+  font-size: 14px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(243, 231, 203, 0.8);
+  stroke-width: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

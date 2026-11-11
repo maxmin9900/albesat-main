@@ -1,0 +1,74 @@
+# Local test stack for THIS working copy — separate from anything else you
+# have running. Ports and volumes are namespaced by the project name, so it
+# cannot clash with the deployed stack or an older checkout.
+#
+#   docker compose -p carpetlocal -f docker-compose.local.yml up -d --build
+#   docker compose -p carpetlocal -f docker-compose.local.yml logs -f web
+#
+# Site   → http://localhost:3000
+# Admin  → http://localhost:3000/admin/login
+# DB UI  → http://localhost:8082   (Adminer, server "db")
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: carpet
+      POSTGRES_PASSWORD: carpet_local
+      POSTGRES_DB: carpet_local
+    ports:
+      # 5433 on the host: 5432 is already taken by the other stack
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carpet -d carpet_local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    command: sh -c "chmod +x /app/docker/entrypoint.dev.sh; sh /app/docker/entrypoint.dev.sh"
+    environment:
+      DATABASE_URL: postgresql://carpet:carpet_local@db:5432/carpet_local?schema=public
+      # rotated so any session cookie left in a browser is rejected
+      JWT_SECRET: local_dd581e3f91e715f36831e9c37f8193c6
+      ADMIN_EMAIL: admin@carpetsamir.com
+      ADMIN_PASSWORD: Admin@12345
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      WATCHPACK_POLLING: "true"
+      # The live auction rooms are a LOCAL-ONLY feature for now (see
+      # src/lib/auction/flags.ts). This is the only place they are switched on;
+      # the production compose file deliberately does not set it.
+      LIVE_AUCTION_ROOMS: "1"
+      # a short sweeper tick makes the auction lifecycle visible while testing
+      AUCTION_SWEEPER_INTERVAL_MS: "2000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+    depends_on:
+      db:
+        condition: service_healthy
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+  node_modules:
+  next_cache:

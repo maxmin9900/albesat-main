@@ -1,0 +1,40 @@
+{
+  "tabriz": "/carpets/tabriz.jpg",
+  "kashan": "/carpets/kashan.jpg",
+  "isfahan": "/carpets/isfahan.jpg",
+  "nain": "/carpets/nain.jpg",
+  "qom": "/carpets/qom.jpg",
+  "heriz": "/carpets/heriz.jpg",
+  "mapCarpetCredits": {
+    "tehran-1": {
+      "file": "File:Tehran rug North Persia circa 1890.jpg",
+      "license": "Public domain",
+      "author": "Unknown artistUnknown artist",
+      "source": "https://commons.wikimedia.org/wiki/File:Tehran_rug_North_Persia_circa_1890.jpg"
+    },
+    "turkaman-1": {
+      "file": "File:Salor Main Carpet MET DP331132.jpg",
+      "license": "CC0",
+      "author": "",
+      "source": "https://commons.wikimedia.org/wiki/File:Salor_Main_Carpet_MET_DP331132.jpg"
+    },
+    "nain-1": {
+      "file": "File:NA'IN CARPET3.JPG",
+      "license": "CC BY-SA 3.0",
+      "author": "NAEINSUN",
+      "source": "https://commons.wikimedia.org/wiki/File:NA%27IN_CARPET3.JPG"
+    },
+    "esfahan-1": {
+      "file": "File:Isfahan Garden carpet.jpg",
+      "license": "Public domain",
+      "author": "Unknown artistUnknown artist (Isfahan school)",
+      "source": "https://commons.wikimedia.org/wiki/File:Isfahan_Garden_carpet.jpg"
+    },
+    "kerman-1": {
+      "file": "File:Antique Persian Kerman Rug.jpg",
+      "license": "CC BY 4.0",
+      "author": "Alen Erfanian",
+      "source": "https://commons.wikimedia.org/wiki/File:Antique_Persian_Kerman_Rug.jpg"
+    }
+  }
+}

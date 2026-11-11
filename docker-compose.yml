@@ -1,0 +1,62 @@
+# Dev stack. No container_name on purpose: a fixed name makes it impossible to
+# run two checkouts of this project side by side — compose refuses with
+# "container name is already in use". Compose namespaces containers by project
+# (the folder name, or -p), which is what we want.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-carpet}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-carpet_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-carpet_samir}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-carpet} -d ${POSTGRES_DB:-carpet_samir}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    restart: unless-stopped
+    # chmod first: a zip built on Windows strips the executable bit from the
+    # script, and since the whole repo is bind-mounted below, that broken
+    # permission would otherwise come back on every container start.
+    command: sh -c "chmod +x /app/docker/entrypoint.dev.sh; sh /app/docker/entrypoint.dev.sh"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-carpet}:${POSTGRES_PASSWORD:-carpet_secret}@db:5432/${POSTGRES_DB:-carpet_samir}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-change_this_in_prod_super_secret_key}
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3100:3000"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+    depends_on:
+      db:
+        condition: service_healthy
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+  node_modules:
+  next_cache:
